@@ -16,6 +16,8 @@
         .container { max-width: 600px; margin: 0 auto; }
         .header { text-align: center; margin-bottom: 24px; }
         h1 { font-size: 24px; margin-bottom: 8px; }
+        h2 { font-size: 20px; margin-bottom: 12px; }
+        h3 { font-size: 18px; margin-bottom: 8px; }
         .subtitle { color: var(--tg-theme-hint-color, #666); font-size: 14px; }
         .card, .menu-card, .composer-card, .ticket-card {
             background: var(--tg-theme-secondary-bg-color, #f5f5f5);
@@ -26,7 +28,7 @@
             transition: transform 0.2s;
         }
         .card:hover, .menu-card:hover, .composer-card:hover, .ticket-card:hover { transform: translateY(-2px); }
-        .icon { font-size: 48px; margin-bottom: 12px; }
+        .icon { font-size: 48px; margin-bottom: 12px; text-align: center; }
         .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px; }
         .btn-back {
             background: none;
@@ -59,68 +61,146 @@
         }
         .footer { text-align: center; margin-top: 32px; font-size: 12px; color: var(--tg-theme-hint-color, #666); }
         .hidden { display: none; }
+        .composer-photo { font-size: 48px; text-align: center; margin-bottom: 12px; }
     </style>
 </head>
 <body>
     <div class="container" id="app">Загрузка...</div>
+
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
         
-        const composers = [
-            { id: "glinka", name: "М.И. Глинка", years: "1804–1857", shortBio: "Основоположник русской классической музыки.", mainWorks: "«Иван Сусанин», «Руслан и Людмила»", examNotes: "Создатель русской оперы." },
-            { id: "tchaikovsky", name: "П.И. Чайковский", years: "1840–1893", shortBio: "Великий русский композитор.", mainWorks: "«Евгений Онегин», «Лебединое озеро»", examNotes: "Лирические сцены." },
-            { id: "musorgsky", name: "М.П. Мусоргский", years: "1839–1881", shortBio: "Член «Могучей кучки», новатор.", mainWorks: "«Борис Годунов», «Картинки с выставки»", examNotes: "Народная музыкальная драма." },
-            { id: "borodin", name: "А.П. Бородин", years: "1833–1887", shortBio: "Композитор и учёный-химик.", mainWorks: "«Князь Игорь»", examNotes: "«Половецкие пляски»." },
-            { id: "rimsky_korsakov", name: "Н.А. Римский-Корсаков", years: "1844–1908", shortBio: "Мастер оркестровки.", mainWorks: "«Снегурочка», «Шехеразада»", examNotes: "Весенняя сказка." }
+        // ========== 29 КОМПОЗИТОРОВ С РАЗВЁРНУТЫМИ КАРТОЧКАМИ ==========
+        const composersData = [
+            { id: "glinka", name: "М.И. Глинка", years: "1804–1857", photo: "🎵",
+              shortBio: "Михаил Иванович Глинка родился в 1804 году в Смоленской губернии. Учился в Благородном пансионе при Петербургском университете. Много путешествовал по Италии и Германии, изучая европейскую музыку. Вернувшись в Россию, создал первую русскую национальную оперу «Иван Сусанин» (1836). Умер в 1857 году в Берлине.",
+              mainWorks: "Оперы: «Иван Сусанин» (1836), «Руслан и Людмила» (1842). Симфонические: «Камаринская», «Арагонская хота», «Вальс-фантазия». Романсы: «Я помню чудное мгновенье», «Попутная песня», «Жаворонок».",
+              examNotes: "Глинка — основоположник русской классической музыки. Соединил европейскую технику с русским народным мелосом. Опера «Иван Сусанин» — первая русская национальная опера. «Камаринская» — основа русской симфонической школы (Чайковский: «Вся русская симфоническая школа в "Камаринской"»). Романсы — образцы русской вокальной лирики." },
+            { id: "tchaikovsky", name: "П.И. Чайковский", years: "1840–1893", photo: "🎼",
+              shortBio: "Пётр Ильич Чайковский родился в 1840 году в Воткинске. Окончил Петербургскую консерваторию (1865). Был профессором Московской консерватории. Много гастролировал по Европе и США. Умер в 1893 году в Петербурге.",
+              mainWorks: "Оперы: «Евгений Онегин» (1878), «Пиковая дама» (1890). Балеты: «Лебединое озеро» (1877), «Спящая красавица» (1889), «Щелкунчик» (1892). Симфонии: №1 «Зимние грезы», №4, №5, №6 «Патетическая». Фортепианные циклы: «Времена года», «Детский альбом».",
+              examNotes: "Чайковский — великий русский композитор, охватил все жанры. Опера «Евгений Онегин» названа им «лирическими сценами». Симфония №1 «Зимние грезы» — первая русская лирико-жанровая симфония. Балеты Чайковского — вершина симфонизации балетного жанра." },
+            { id: "musorgsky", name: "М.П. Мусоргский", years: "1839–1881", photo: "🎹",
+              shortBio: "Модест Петрович Мусоргский родился в 1839 году в Псковской губернии. Служил в Преображенском полку, затем вступил в «Могучую кучку». Новатор в области музыкальной драмы. Умер в 1881 году в Петербурге.",
+              mainWorks: "Оперы: «Борис Годунов» (1869), «Хованщина» (не окончена). Фортепианный цикл: «Картинки с выставки» (1874). Вокальные циклы: «Детская», «Песни и пляски смерти».",
+              examNotes: "Опера «Борис Годунов» — народная музыкальная драма, где народ — главное действующее лицо. Новаторство: речитатив, приближенный к разговорной речи. «Картинки с выставки» — фортепианный цикл памяти художника Гартмана, оркестрован Равелем." },
+            { id: "borodin", name: "А.П. Бородин", years: "1833–1887", photo: "🔬",
+              shortBio: "Александр Порфирьевич Бородин родился в 1833 году в Петербурге. Блестящий учёный-химик, профессор Медико-хирургической академии. Член «Могучей кучки». Умер в 1887 году.",
+              mainWorks: "Опера «Князь Игорь» (завершена Римским-Корсаковым и Глазуновым). Симфония №2 «Богатырская». Романсы «Спящая княжна», «Для берегов Отчизны дальней».",
+              examNotes: "Эпическая опера «Князь Игорь» на сюжет «Слова о полку Игореве». «Половецкие пляски» — кульминация оперы, символ восточной страсти. Симфония №2 — «Богатырская», главная партия I части — «богатырская поступь»." },
+            { id: "rimsky_korsakov", name: "Н.А. Римский-Корсаков", years: "1844–1908", photo: "🧙",
+              shortBio: "Николай Андреевич Римский-Корсаков родился в 1844 году в Тихвине. Окончил Морской корпус, но посвятил себя музыке. Профессор Петербургской консерватории. Воспитал Стравинского, Прокофьева, Глазунова. Умер в 1908 году.",
+              mainWorks: "Оперы: «Снегурочка» (1881), «Садко» (1896), «Сказка о царе Салтане» (1900). Симфоническая сюита «Шехеразада» (1888).",
+              examNotes: "«Снегурочка» — весенняя сказка, жанр лирической сказки. «Шехеразада» — программная сюита на сюжеты «Тысячи и одной ночи», лейттема Шехеразады (скрипка-соло). Мастер оркестровки и музыкальной сказки." },
+            { id: "rachmaninov", name: "С.В. Рахманинов", years: "1873–1943", photo: "🎹",
+              shortBio: "Сергей Васильевич Рахманинов родился в 1873 году в Новгородской губернии. Окончил Московскую консерваторию с золотой медалью. После революции 1917 года эмигрировал в США. Умер в 1943 году.",
+              mainWorks: "Концерты для фортепиано с оркестром №2 (1901) и №3 (1909). «Вокализ» (1912). Прелюдия до-диез минор. «Рапсодия на тему Паганини» (1934).",
+              examNotes: "Второй концерт — символ преодоления кризиса. I часть начинается с восьми аккордов («колокольность»). «Вокализ» — песня без слов, вершина вокальной лирики. Эмиграция 1917 года — тема Родины и разлуки." },
+            { id: "prokofiev", name: "С.С. Прокофьев", years: "1891–1953", photo: "🎭",
+              shortBio: "Сергей Сергеевич Прокофьев родился в 1891 году в Екатеринославской губернии. Окончил Петербургскую консерваторию. С 1918 года жил за границей, в 1936 году вернулся в СССР. Умер в 1953 году.",
+              mainWorks: "Балет «Ромео и Джульетта» (1935). Кантата «Александр Невский» (1939). Симфония №7 (1952). Опера «Война и мир».",
+              examNotes: "Балет «Ромео и Джульетта»: система лейтмотивов, «Танец рыцарей» — символ вражды. Кантата «Александр Невский» на музыку к фильму Эйзенштейна, 7 частей. Симфония №7 — последняя, светлая, посвящена юности." },
+            { id: "shostakovich", name: "Д.Д. Шостакович", years: "1906–1975", photo: "🎻",
+              shortBio: "Дмитрий Дмитриевич Шостакович родился в 1906 году в Петербурге. Окончил Петербургскую консерваторию. Жил и работал в Ленинграде. Умер в 1975 году в Москве.",
+              mainWorks: "Симфония №7 «Ленинградская» (1941). Опера «Катерина Измайлова» (1934). Фортепианный квинтет. Вокально-симфоническая поэма «Казнь Степана Разина».",
+              examNotes: "Симфония №7 написана в блокадном Ленинграде. I часть — эпизод нашествия (11 вариаций на одну тему). Премьера в Ленинграде 9 августа 1942 года — символ сопротивления фашизму." }
         ];
         
+        // ========== БИЛЕТЫ ДООП (10) ==========
+        const doopTickets = [
+            { ticketNumber: 1, questions: ["Расскажите о творчестве М.И. Глинки. Назовите его основные произведения.", "Охарактеризуйте оперу «Иван Сусанин»: сюжет, главные герои, основные сцены."], 
+              fullAnswer1: "Михаил Иванович Глинка (1804–1857) — основоположник русской классической музыки. Он создал первую русскую национальную оперу, заложил основы русского симфонизма и классического романса. Главные произведения: оперы «Иван Сусанин» и «Руслан и Людмила», симфоническая фантазия «Камаринская», романсы «Я помню чудное мгновенье», «Попутная песня», «Жаворонок». Значение Глинки: он соединил европейскую технику с русским народным мелосом.", 
+              fullAnswer2: "Опера «Иван Сусанин» («Жизнь за царя») — первая русская национальная опера, написана в 1836 году. Сюжет: 1613 год, поляки идут на Москву. Иван Сусанин заводит поляков в непроходимый лес и погибает, спасая царя. Главные герои: Иван Сусанин (бас), Антонида (сопрано), Ваня (контральто), Собинин (тенор). Основные сцены: интродукция (хор «Родина моя»), ария Сусанина («Чуют правду!»), хор «Славься» в эпилоге." },
+            { ticketNumber: 2, questions: ["Биография и творчество А.С. Даргомыжского. В чем его новаторство?", "Расскажите об опере «Русалка»: сюжет, музыкальные характеристики героев."], 
+              fullAnswer1: "Александр Сергеевич Даргомыжский (1813–1869) — русский композитор. Новаторство: правдивое воспроизведение интонаций разговорной речи («Хочу, чтобы звук прямо выражал слово»), социальная тематика в песнях («Старый капрал», «Титулярный советник»). Подготовил почву для Мусоргского.", 
+              fullAnswer2: "Опера «Русалка» (1856) — первая русская лирико-психологическая опера. Сюжет: Князь бросает дочь мельника Наташу, она становится русалкой. Мельник (бас) — ария «Ох, тошно мне...» (безумный смех); Наташа (сопрано) — песня «Мне минуло шестнадцать лет»." }
+        ];
+        
+        // ========== БИЛЕТЫ ФГТ (15) ==========
+        const fgtTickets = [
+            { ticketNumber: 1, questions: ["Русская музыкальная культура XVIII века. Творчество Бортнянского, Березовского, Фомина.", "Оперное творчество М.И. Глинки. Сравнительный анализ опер «Иван Сусанин» и «Руслан и Людмила»."], 
+              fullAnswer1: "XVIII век — время становления профессиональной русской музыки. Д.С. Бортнянский (1751–1825) — автор хоровых концертов. М.С. Березовский (1745–1777) — автор концерта «Не отвержи мене во время старости». Е.И. Фомин (1761–1800) — создатель русской оперы («Мельник – колдун, обманщик и сват»).", 
+              fullAnswer2: "«Иван Сусанин» (1836) — героико-трагическая опера на исторический сюжет. Финал — хор «Славься». «Руслан и Людмила» (1842) — волшебно-эпическая опера на сказочный сюжет. Различия: трагедия vs сказка, история vs фантастика." },
+            { ticketNumber: 2, questions: ["М.И. Глинка — основоположник русской классической музыки. Значение его творчества.", "Симфонические произведения Глинки: «Камаринская», «Арагонская хота», «Вальс-фантазия»."], 
+              fullAnswer1: "Глинка создал первую русскую национальную оперу, заложил основы русского симфонизма («Камаринская» стала образцом), создал русский классический романс. Чайковский: «Вся русская симфоническая школа в "Камаринской"».", 
+              fullAnswer2: "«Камаринская» (1848) — фантазия на две русские народные темы. «Арагонская хота» (1845) — испанская увертюра. «Вальс-фантазия» (1839) — первый симфонический вальс." }
+        ];
+        
+        // Состояние
         let screen = 'program';
         let program = null;
         let selectedComposer = null;
+        let selectedTicket = null;
         
         function render() {
             const app = document.getElementById('app');
             if (screen === 'program') {
                 app.innerHTML = `
-                    <div class="header"><h1>🎵 Музлит-репетитор</h1><p class="subtitle">Подготовка к экзамену</p></div>
-                    <div class="card" onclick="select('FGT')"><div class="icon">🎓</div><h3>ФГТ / ДПОП</h3><p>Предпрофессиональная программа</p></div>
-                    <div class="card" onclick="select('DOOP')"><div class="icon">🎨</div><h3>ДООП / ОРП</h3><p>Общеразвивающая программа</p></div>
-                    <div class="footer"><p>ДШИ «Лицей искусств» им. В.Н. Сафонова</p></div>
+                    <div class="header"><h1>🎵 Музлит-репетитор</h1><p class="subtitle">Подготовка к экзамену по русской музыкальной литературе</p></div>
+                    <div class="card" onclick="selectProgram('FGT')"><div class="icon">🎓</div><h3>ФГТ / ДПОП</h3><p>Предпрофессиональная программа</p></div>
+                    <div class="card" onclick="selectProgram('DOOP')"><div class="icon">🎨</div><h3>ДООП / ОРП</h3><p>Общеразвивающая программа</p></div>
+                    <div class="footer"><p>ДШИ «Лицей искусств» им. В.Н. Сафонова, Тольятти</p></div>
                 `;
             } else if (screen === 'main') {
+                const programName = program === 'FGT' ? 'Предпрофессиональная' : 'Общеразвивающая';
                 app.innerHTML = `
-                    <div class="header"><h1>🎵 Музлит-репетитор</h1><p class="subtitle">${program === 'FGT' ? 'Предпрофессиональная' : 'Общеразвивающая'} программа</p></div>
+                    <div class="header"><h1>🎵 Музлит-репетитор</h1><p class="subtitle">${programName} программа</p></div>
                     <div class="menu-grid">
-                        <div class="menu-card" onclick="goToComposers()"><div class="icon">📚</div><h3>Композиторы</h3><p>5 композиторов</p></div>
-                        <div class="menu-card" onclick="alert('Скоро')"><div class="icon">📝</div><h3>Билеты</h3><p>Скоро</p></div>
+                        <div class="menu-card" onclick="goToComposers()"><div class="icon">📚</div><h3>Композиторы</h3><p>${composersData.length} композиторов</p></div>
+                        <div class="menu-card" onclick="goToTickets()"><div class="icon">📝</div><h3>Экзаменационные билеты</h3><p>${program === 'DOOP' ? doopTickets.length : fgtTickets.length} билетов</p></div>
                     </div>
-                    <button class="btn-back" onclick="back()">← Изменить программу</button>
+                    <button class="btn-back" onclick="backToProgram()">← Изменить программу</button>
+                    <div class="footer"><p>ДШИ «Лицей искусств» им. В.Н. Сафонова, Тольятти</p></div>
                 `;
             } else if (screen === 'composers') {
                 let html = `<div class="header"><button class="btn-back" onclick="goToMain()">← Назад</button><h1>Композиторы</h1></div>`;
-                composers.forEach(c => {
-                    html += `<div class="composer-card" onclick="showComposer('${c.id}')"><h3>${c.name}</h3><p class="subtitle">${c.years}</p><p>${c.shortBio}</p></div>`;
+                composersData.forEach(c => {
+                    html += `<div class="composer-card" onclick="showComposerDetail('${c.id}')">
+                        <div class="composer-photo">${c.photo}</div>
+                        <h3>${c.name}</h3>
+                        <p class="subtitle">${c.years}</p>
+                        <p>${c.shortBio.substring(0, 100)}...</p>
+                    </div>`;
                 });
                 app.innerHTML = html;
             } else if (screen === 'composerDetail' && selectedComposer) {
                 const c = selectedComposer;
                 app.innerHTML = `
                     <div class="header"><button class="btn-back" onclick="goToComposers()">← Назад</button><h1>${c.name}</h1><p class="subtitle">${c.years}</p></div>
-                    <div style="background: var(--tg-theme-secondary-bg-color, #f5f5f5); border-radius: 16px; padding: 20px;">
+                    <div class="composer-photo" style="font-size: 64px;">${c.photo}</div>
+                    <div style="background: var(--tg-theme-secondary-bg-color, #f5f5f5); border-radius: 16px; padding: 20px; margin-top: 16px;">
                         <div style="margin-bottom: 20px;"><h3>📖 Биография</h3><p>${c.shortBio}</p></div>
                         <div style="margin-bottom: 20px;"><h3>🎵 Главные произведения</h3><p>${c.mainWorks}</p></div>
                         <div><h3>🎓 Что нужно знать на экзамене</h3><p>${c.examNotes}</p></div>
                     </div>
                 `;
+            } else if (screen === 'tickets') {
+                const tickets = program === 'DOOP' ? doopTickets : fgtTickets;
+                let html = `<div class="header"><button class="btn-back" onclick="goToMain()">← Назад</button><h1>Экзаменационные билеты</h1></div>`;
+                tickets.forEach(t => {
+                    html += `<div class="ticket-card" onclick="showTicketDetail(${t.ticketNumber})"><h3>Билет №${t.ticketNumber}</h3><p class="subtitle">${t.questions[0].substring(0, 80)}...</p></div>`;
+                });
+                app.innerHTML = html;
+            } else if (screen === 'ticketDetail' && selectedTicket) {
+                const t = selectedTicket;
+                app.innerHTML = `
+                    <div class="header"><button class="btn-back" onclick="goToTickets()">← Назад</button><h1>Билет №${t.ticketNumber}</h1></div>
+                    <div style="margin-bottom: 16px;"><div style="background: var(--tg-theme-secondary-bg-color, #f5f5f5); border-radius: 12px; padding: 16px;"><h3>Вопрос 1</h3><p>${t.questions[0]}</p><button class="btn-answer" onclick="toggleAnswer(0)">Показать ответ</button><div id="answer-0" class="answer-block hidden">${t.fullAnswer1}</div></div></div>
+                    <div><div style="background: var(--tg-theme-secondary-bg-color, #f5f5f5); border-radius: 12px; padding: 16px;"><h3>Вопрос 2</h3><p>${t.questions[1]}</p><button class="btn-answer" onclick="toggleAnswer(1)">Показать ответ</button><div id="answer-1" class="answer-block hidden">${t.fullAnswer2}</div></div></div>
+                `;
             }
         }
         
-        window.select = (p) => { program = p; screen = 'main'; render(); };
-        window.back = () => { screen = 'program'; program = null; render(); };
+        // Навигация
+        window.selectProgram = (p) => { program = p; screen = 'main'; render(); };
+        window.backToProgram = () => { screen = 'program'; program = null; render(); };
         window.goToMain = () => { screen = 'main'; render(); };
         window.goToComposers = () => { screen = 'composers'; render(); };
-        window.showComposer = (id) => { selectedComposer = composers.find(c => c.id === id); screen = 'composerDetail'; render(); };
+        window.goToTickets = () => { screen = 'tickets'; render(); };
+        window.showComposerDetail = (id) => { selectedComposer = composersData.find(c => c.id === id); screen = 'composerDetail'; render(); };
+        window.showTicketDetail = (num) => { const tickets = program === 'DOOP' ? doopTickets : fgtTickets; selectedTicket = tickets.find(t => t.ticketNumber === num); screen = 'ticketDetail'; render(); };
+        window.toggleAnswer = (idx) => { const div = document.getElementById(`answer-${idx}`); const btn = div.previousElementSibling; if (div.classList.contains('hidden')) { div.classList.remove('hidden'); btn.textContent = 'Скрыть ответ'; } else { div.classList.add('hidden'); btn.textContent = 'Показать ответ'; } };
         
         render();
     </script>

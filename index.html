@@ -29,6 +29,14 @@
             font-size: 24px;
             margin-bottom: 8px;
         }
+        h2 {
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+        h3 {
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
         .subtitle {
             color: var(--tg-theme-hint-color, #666);
             font-size: 14px;
@@ -69,6 +77,13 @@
             margin-bottom: 12px;
             cursor: pointer;
         }
+        .ticket-card {
+            background: var(--tg-theme-secondary-bg-color, #f5f5f5);
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+        }
         .btn-back {
             background: none;
             border: 1px solid var(--tg-theme-button-color, #3390ec);
@@ -77,6 +92,26 @@
             border-radius: 12px;
             cursor: pointer;
             width: 100%;
+            font-size: 14px;
+            margin-top: 8px;
+        }
+        .btn-answer {
+            background: var(--tg-theme-button-color, #3390ec);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+        .answer-block {
+            background: var(--tg-theme-bg-color, #ffffff);
+            border-radius: 8px;
+            padding: 12px;
+            margin-top: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+            border-left: 4px solid var(--tg-theme-button-color, #3390ec);
         }
         .footer {
             text-align: center;
@@ -88,12 +123,258 @@
             text-align: center;
             padding: 40px;
         }
+        .hidden {
+            display: none;
+        }
     </style>
 </head>
 <body>
     <div class="container" id="app">
         <div class="loading">Загрузка...</div>
     </div>
-    <script src="app.js"></script>
+
+    <script>
+        // Telegram WebApp
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        
+        // ДАННЫЕ (встроенные)
+        const composersData = [
+            { id: "glinka", name: "М.И. Глинка", years: "1804–1857", shortBio: "Основоположник русской классической музыки. Создал первую русскую национальную оперу.", mainWorks: "Оперы «Иван Сусанин», «Руслан и Людмила»; «Камаринская»; романсы", examNotes: "Создатель русской оперы и симфонизма. «Камаринская» — основа русской симфонической школы." },
+            { id: "tchaikovsky", name: "П.И. Чайковский", years: "1840–1893", shortBio: "Великий русский композитор, дирижёр, педагог. Охватил все жанры.", mainWorks: "Оперы «Евгений Онегин», балеты «Лебединое озеро», симфонии, романсы", examNotes: "«Евгений Онегин» — лирические сцены. Симфония №1 «Зимние грезы»." },
+            { id: "musorgsky", name: "М.П. Мусоргский", years: "1839–1881", shortBio: "Русский композитор, член «Могучей кучки». Новатор в области музыкальной драмы.", mainWorks: "Опера «Борис Годунов», «Картинки с выставки», песни", examNotes: "Опера «Борис Годунов» — народная музыкальная драма. «Картинки с выставки»." },
+            { id: "borodin", name: "А.П. Бородин", years: "1833–1887", shortBio: "Русский композитор и учёный-химик, член «Могучей кучки».", mainWorks: "Опера «Князь Игорь», симфония №2 «Богатырская», романсы", examNotes: "Эпическая опера «Князь Игорь». «Половецкие пляски»." },
+            { id: "rimsky_korsakov", name: "Н.А. Римский-Корсаков", years: "1844–1908", shortBio: "Русский композитор, педагог, дирижёр. Мастер оркестровки и музыкальной сказки.", mainWorks: "Оперы «Снегурочка», «Садко»; сюита «Шехеразада»", examNotes: "«Снегурочка» — весенняя сказка. «Шехеразада» — восточный колорит." }
+        ];
+        
+        const ticketsData = {
+            doop: [
+                { ticketNumber: 1, questions: ["Расскажите о творчестве М.И. Глинки. Назовите его основные произведения.", "Охарактеризуйте оперу «Иван Сусанин»: сюжет, главные герои, основные сцены."], fullAnswer1: "Михаил Иванович Глинка (1804–1857) — основоположник русской классической музыки. Создал первую русскую национальную оперу...", fullAnswer2: "Опера «Иван Сусанин» — первая русская национальная опера, написана в 1836 году...", audioFragment: "" }
+            ],
+            fgt: [
+                { ticketNumber: 1, questions: ["Русская музыкальная культура XVIII века. Творчество Бортнянского, Березовского, Фомина.", "Оперное творчество М.И. Глинки. Сравнительный анализ опер «Иван Сусанин» и «Руслан и Людмила»."], fullAnswer1: "XVIII век — время становления профессиональной русской музыки...", fullAnswer2: "Опера «Иван Сусанин» (1836) — героико-трагическая опера...", audioFragment: "" }
+            ]
+        };
+        
+        // Состояние
+        let currentScreen = 'program';
+        let currentProgram = null;
+        let currentComposer = null;
+        let currentTicket = null;
+        let showAnswers = { 0: false, 1: false };
+        
+        // Функции рендеринга
+        function render() {
+            const app = document.getElementById('app');
+            
+            if (currentScreen === 'program') {
+                renderProgramScreen(app);
+            } else if (currentScreen === 'main') {
+                renderMainMenu(app);
+            } else if (currentScreen === 'composers') {
+                renderComposersList(app);
+            } else if (currentScreen === 'composerDetail') {
+                renderComposerDetail(app);
+            } else if (currentScreen === 'tickets') {
+                renderTicketsList(app);
+            } else if (currentScreen === 'ticketDetail') {
+                renderTicketDetail(app);
+            }
+        }
+        
+        function renderProgramScreen(container) {
+            container.innerHTML = `
+                <div class="header">
+                    <h1>🎵 Музлит-репетитор</h1>
+                    <p class="subtitle">Подготовка к экзамену по русской музыкальной литературе</p>
+                </div>
+                <div class="card" onclick="selectProgram('FGT')">
+                    <div class="icon">🎓</div>
+                    <h3>ФГТ / ДПОП</h3>
+                    <p>Предпрофессиональная программа</p>
+                </div>
+                <div class="card" onclick="selectProgram('DOOP')">
+                    <div class="icon">🎨</div>
+                    <h3>ДООП / ОРП</h3>
+                    <p>Общеразвивающая программа</p>
+                </div>
+                <div class="footer">
+                    <p>ДШИ «Лицей искусств» им. В.Н. Сафонова, Тольятти</p>
+                </div>
+            `;
+        }
+        
+        function renderMainMenu(container) {
+            const programName = currentProgram === 'FGT' ? 'Предпрофессиональная' : 'Общеразвивающая';
+            container.innerHTML = `
+                <div class="header">
+                    <h1>🎵 Музлит-репетитор</h1>
+                    <p class="subtitle">${programName} программа</p>
+                </div>
+                <div class="menu-grid">
+                    <div class="menu-card" onclick="goToComposers()">
+                        <div class="icon">📚</div>
+                        <h3>Композиторы</h3>
+                        <p>5 композиторов с биографиями</p>
+                    </div>
+                    <div class="menu-card" onclick="goToTickets()">
+                        <div class="icon">📝</div>
+                        <h3>Экзаменационные билеты</h3>
+                        <p>${currentProgram === 'DOOP' ? '1' : '1'} билет</p>
+                    </div>
+                </div>
+                <button class="btn-back" onclick="backToProgram()">← Изменить программу</button>
+                <div class="footer">
+                    <p>ДШИ «Лицей искусств» им. В.Н. Сафонова, Тольятти</p>
+                </div>
+            `;
+        }
+        
+        function renderComposersList(container) {
+            let html = `
+                <div class="header">
+                    <button class="btn-back" onclick="goToMain()">← Назад</button>
+                    <h1>Композиторы</h1>
+                </div>
+            `;
+            composersData.forEach(composer => {
+                html += `
+                    <div class="composer-card" onclick="showComposerDetail('${composer.id}')">
+                        <h3>${composer.name}</h3>
+                        <p class="subtitle">${composer.years}</p>
+                        <p>${composer.shortBio.substring(0, 100)}...</p>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+        
+        function renderComposerDetail(container) {
+            const c = currentComposer;
+            container.innerHTML = `
+                <div class="header">
+                    <button class="btn-back" onclick="goToComposers()">← Назад</button>
+                    <h1>${c.name}</h1>
+                    <p class="subtitle">${c.years}</p>
+                </div>
+                <div style="background: var(--tg-theme-secondary-bg-color, #f5f5f5); border-radius: 16px; padding: 20px;">
+                    <div style="margin-bottom: 20px;">
+                        <h3>📖 Биография</h3>
+                        <p>${c.shortBio}</p>
+                    </div>
+                    <div style="margin-bottom: 20px;">
+                        <h3>🎵 Главные произведения</h3>
+                        <p>${c.mainWorks}</p>
+                    </div>
+                    <div>
+                        <h3>🎓 Что нужно знать на экзамене</h3>
+                        <p>${c.examNotes}</p>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function renderTicketsList(container) {
+            const tickets = currentProgram === 'DOOP' ? ticketsData.doop : ticketsData.fgt;
+            let html = `
+                <div class="header">
+                    <button class="btn-back" onclick="goToMain()">← Назад</button>
+                    <h1>Экзаменационные билеты</h1>
+                </div>
+            `;
+            tickets.forEach(ticket => {
+                html += `
+                    <div class="ticket-card" onclick="showTicketDetail(${ticket.ticketNumber})">
+                        <h3>Билет №${ticket.ticketNumber}</h3>
+                        <p class="subtitle">${ticket.questions[0].substring(0, 80)}...</p>
+                    </div>
+                `;
+            });
+            container.innerHTML = html;
+        }
+        
+        function renderTicketDetail(container) {
+            const t = currentTicket;
+            container.innerHTML = `
+                <div class="header">
+                    <button class="btn-back" onclick="goToTickets()">← Назад</button>
+                    <h1>Билет №${t.ticketNumber}</h1>
+                </div>
+                <div style="margin-bottom: 16px;">
+                    <div style="background: var(--tg-theme-secondary-bg-color, #f5f5f5); border-radius: 12px; padding: 16px;">
+                        <h3>Вопрос 1</h3>
+                        <p>${t.questions[0]}</p>
+                        <button class="btn-answer" onclick="toggleAnswer(0)">Показать ответ</button>
+                        <div id="answer-0" class="answer-block hidden">${t.fullAnswer1}</div>
+                    </div>
+                </div>
+                <div>
+                    <div style="background: var(--tg-theme-secondary-bg-color, #f5f5f5); border-radius: 12px; padding: 16px;">
+                        <h3>Вопрос 2</h3>
+                        <p>${t.questions[1]}</p>
+                        <button class="btn-answer" onclick="toggleAnswer(1)">Показать ответ</button>
+                        <div id="answer-1" class="answer-block hidden">${t.fullAnswer2}</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Навигация
+        window.selectProgram = (program) => {
+            currentProgram = program;
+            currentScreen = 'main';
+            render();
+        };
+        
+        window.backToProgram = () => {
+            currentScreen = 'program';
+            currentProgram = null;
+            render();
+        };
+        
+        window.goToMain = () => {
+            currentScreen = 'main';
+            render();
+        };
+        
+        window.goToComposers = () => {
+            currentScreen = 'composers';
+            render();
+        };
+        
+        window.goToTickets = () => {
+            currentScreen = 'tickets';
+            render();
+        };
+        
+        window.showComposerDetail = (id) => {
+            currentComposer = composersData.find(c => c.id === id);
+            currentScreen = 'composerDetail';
+            render();
+        };
+        
+        window.showTicketDetail = (ticketNumber) => {
+            const tickets = currentProgram === 'DOOP' ? ticketsData.doop : ticketsData.fgt;
+            currentTicket = tickets.find(t => t.ticketNumber === ticketNumber);
+            showAnswers = { 0: false, 1: false };
+            currentScreen = 'ticketDetail';
+            render();
+        };
+        
+        window.toggleAnswer = (index) => {
+            const answerDiv = document.getElementById(`answer-${index}`);
+            const button = answerDiv.previousElementSibling;
+            if (answerDiv.classList.contains('hidden')) {
+                answerDiv.classList.remove('hidden');
+                button.textContent = 'Скрыть ответ';
+            } else {
+                answerDiv.classList.add('hidden');
+                button.textContent = 'Показать ответ';
+            }
+        };
+        
+        // Запуск
+        render();
+    </script>
 </body>
 </html>

@@ -2,51 +2,22 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Музлит-репетитор</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: var(--tg-theme-bg-color, #ffffff);
             color: var(--tg-theme-text-color, #000000);
-            padding: 16px;
-        }
-        .container {
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        .header {
+            padding: 20px;
             text-align: center;
-            margin-bottom: 24px;
-        }
-        h1 {
-            font-size: 24px;
-            margin-bottom: 8px;
-        }
-        h2 {
-            font-size: 20px;
-            margin-bottom: 12px;
-        }
-        h3 {
-            font-size: 18px;
-            margin-bottom: 8px;
-        }
-        .subtitle {
-            color: var(--tg-theme-hint-color, #666);
-            font-size: 14px;
         }
         .card {
             background: var(--tg-theme-secondary-bg-color, #f5f5f5);
             border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 16px;
-            text-align: center;
+            padding: 20px;
+            margin: 16px 0;
             cursor: pointer;
             transition: transform 0.2s;
         }
@@ -57,235 +28,36 @@
             font-size: 48px;
             margin-bottom: 12px;
         }
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-        .menu-card {
-            background: var(--tg-theme-secondary-bg-color, #f5f5f5);
-            border-radius: 12px;
-            padding: 20px;
-            cursor: pointer;
-            text-align: center;
-        }
-        .composer-card {
-            background: var(--tg-theme-secondary-bg-color, #f5f5f5);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-            cursor: pointer;
-        }
-        .ticket-card {
-            background: var(--tg-theme-secondary-bg-color, #f5f5f5);
-            border-radius: 12px;
-            padding: 16px;
-            margin-bottom: 12px;
-            cursor: pointer;
-        }
-        .btn-back {
-            background: none;
-            border: 1px solid var(--tg-theme-button-color, #3390ec);
-            color: var(--tg-theme-button-color, #3390ec);
-            padding: 10px 16px;
-            border-radius: 12px;
-            cursor: pointer;
-            width: 100%;
-            font-size: 14px;
-            margin-top: 8px;
-        }
-        .btn-answer {
-            background: var(--tg-theme-button-color, #3390ec);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 10px;
-            cursor: pointer;
-            margin-top: 12px;
-        }
-        .answer-block {
-            background: var(--tg-theme-bg-color, #ffffff);
-            border-radius: 8px;
-            padding: 12px;
-            margin-top: 12px;
-            font-size: 14px;
-            line-height: 1.5;
-            border-left: 4px solid var(--tg-theme-button-color, #3390ec);
-        }
         .footer {
-            text-align: center;
             margin-top: 32px;
             font-size: 12px;
             color: var(--tg-theme-hint-color, #666);
         }
-        .hidden {
-            display: none;
-        }
     </style>
 </head>
 <body>
-    <div class="container" id="app">
-        <div class="loading">Загрузка...</div>
+    <h1>🎵 Музлит-репетитор</h1>
+    <p>Подготовка к экзамену по русской музыкальной литературе</p>
+    
+    <div class="card" onclick="alert('ФГТ / ДПОП выбрана')">
+        <div class="icon">🎓</div>
+        <h3>ФГТ / ДПОП</h3>
+        <p>Предпрофессиональная программа</p>
     </div>
-
+    
+    <div class="card" onclick="alert('ДООП / ОРП выбрана')">
+        <div class="icon">🎨</div>
+        <h3>ДООП / ОРП</h3>
+        <p>Общеразвивающая программа</p>
+    </div>
+    
+    <div class="footer">
+        ДШИ «Лицей искусств» им. В.Н. Сафонова, Тольятти
+    </div>
+    
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand();
-        
-        // 29 КОМПОЗИТОРОВ
-        const composersData = [
-            { id: "bortnyansky", name: "Д.С. Бортнянский", years: "1751–1825", shortBio: "Русский композитор, создатель русской школы хорового пения.", mainWorks: "«Херувимская песнь», «Да воскреснет Бог»", examNotes: "Хоровой концерт a cappella. Соединил итальянское письмо с русским распевом." },
-            { id: "berezovsky", name: "М.С. Березовский", years: "1745–1777", shortBio: "Русский композитор. Трагическая судьба.", mainWorks: "«Не отвержи мене во время старости»", examNotes: "Первый русский композитор, чьё произведение исполняли в Европе." },
-            { id: "fomin", name: "Е.И. Фомин", years: "1761–1800", shortBio: "Русский композитор, один из создателей русской оперы.", mainWorks: "«Мельник – колдун, обманщик и сват»", examNotes: "Первая русская комическая опера." },
-            { id: "alyabyev", name: "А.А. Алябьев", years: "1787–1851", shortBio: "Русский композитор, участник войны 1812 года.", mainWorks: "«Соловей», «Зимняя дорога»", examNotes: "Романс «Соловей» написан в тюрьме." },
-            { id: "varlamov", name: "А.Е. Варламов", years: "1801–1848", shortBio: "Русский композитор, его романсы стали народными песнями.", mainWorks: "«Красный сарафан», «Белеет парус одинокий»", examNotes: "Простые мелодии, близкие к народной песне." },
-            { id: "gurilyov", name: "А.Л. Гурилёв", years: "1803–1858", shortBio: "Русский композитор, пианист.", mainWorks: "«Колокольчик», «Домик-крошечка»", examNotes: "Романсы отличаются задушевностью, грустью." },
-            { id: "glinka", name: "М.И. Глинка", years: "1804–1857", shortBio: "Основоположник русской классической музыки.", mainWorks: "«Иван Сусанин», «Руслан и Людмила», «Камаринская»", examNotes: "Создатель русской оперы и симфонизма." },
-            { id: "dargomyzhsky", name: "А.С. Даргомыжский", years: "1813–1869", shortBio: "Русский композитор, новатор в области вокальной музыки.", mainWorks: "«Русалка», «Каменный гость»", examNotes: "Правдивое воспроизведение интонаций разговорной речи." },
-            { id: "balakirev", name: "М.А. Балакирев", years: "1837–1910", shortBio: "Глава «Могучей кучки».", mainWorks: "«Исламей»", examNotes: "Собирал народные песни." },
-            { id: "cui", name: "Ц.А. Кюи", years: "1835–1918", shortBio: "Композитор, военный инженер, критик.", mainWorks: "«Вильям Ратклиф»", examNotes: "Пропагандировал творчество «Могучей кучки»." },
-            { id: "borodin", name: "А.П. Бородин", years: "1833–1887", shortBio: "Композитор и учёный-химик.", mainWorks: "«Князь Игорь», «Богатырская» симфония", examNotes: "Эпическая опера, «Половецкие пляски»." },
-            { id: "musorgsky", name: "М.П. Мусоргский", years: "1839–1881", shortBio: "Член «Могучей кучки», новатор.", mainWorks: "«Борис Годунов», «Картинки с выставки»", examNotes: "Народная музыкальная драма." },
-            { id: "rimsky_korsakov", name: "Н.А. Римский-Корсаков", years: "1844–1908", shortBio: "Мастер оркестровки, композитор-сказочник.", mainWorks: "«Снегурочка», «Шехеразада»", examNotes: "Весенняя сказка, восточный колорит." },
-            { id: "tchaikovsky", name: "П.И. Чайковский", years: "1840–1893", shortBio: "Великий русский композитор.", mainWorks: "«Евгений Онегин», «Лебединое озеро»", examNotes: "Лирические сцены, «Зимние грезы»." },
-            { id: "rachmaninov", name: "С.В. Рахманинов", years: "1873–1943", shortBio: "Композитор, пианист, дирижёр. Эмигрант.", mainWorks: "Концерт №2, «Вокализ»", examNotes: "Второй концерт, эмиграция 1917 года." },
-            { id: "prokofiev", name: "С.С. Прокофьев", years: "1891–1953", shortBio: "Русский композитор. Вернулся в СССР в 1936.", mainWorks: "«Ромео и Джульетта», «Александр Невский»", examNotes: "Танец рыцарей, кантата." },
-            { id: "shostakovich", name: "Д.Д. Шостакович", years: "1906–1975", shortBio: "Великий советский композитор.", mainWorks: "Симфония №7 «Ленинградская»", examNotes: "Тема нашествия, блокадный Ленинград." },
-            { id: "khachaturian", name: "А.И. Хачатурян", years: "1903–1978", shortBio: "Армянский советский композитор.", mainWorks: "«Спартак», «Гаянэ»", examNotes: "Танец с саблями." },
-            { id: "sviridov", name: "Г.В. Свиридов", years: "1915–1998", shortBio: "Русский советский композитор.", mainWorks: "«Метель»", examNotes: "Романс, вальс из «Метели»." },
-            { id: "gavrilin", name: "В.А. Гаврилин", years: "1939–1999", shortBio: "Представитель новой фольклорной волны.", mainWorks: "Балет «Анюта»", examNotes: "Вальс из балета «Анюта»." },
-            { id: "shchedrin", name: "Р.К. Щедрин", years: "1932–н.в.", shortBio: "Муж Майи Плисецкой.", mainWorks: "«Кармен-сюита»", examNotes: "Посвящена Плисецкой." },
-            { id: "schnittke", name: "А.Г. Шнитке", years: "1934–1998", shortBio: "Лидер авангарда.", mainWorks: "Concerto grosso №1", examNotes: "Полистилистика." },
-            { id: "gubaidulina", name: "С.А. Губайдуллина", years: "1931–н.в.", shortBio: "Лидер авангарда.", mainWorks: "«Detto-I»", examNotes: "Духовная музыка." },
-            { id: "denisov", name: "Э.В. Денисов", years: "1929–1996", shortBio: "Лидер авангарда.", mainWorks: "«Знаки на белом»", examNotes: "Авангард." },
-            { id: "taneev", name: "С.И. Танеев", years: "1856–1915", shortBio: "Ученик Чайковского.", mainWorks: "«Иоанн Дамаскин»", examNotes: "Мастер полифонии." },
-            { id: "lyadov", name: "А.К. Лядов", years: "1855–1914", shortBio: "Мастер миниатюры.", mainWorks: "«Волшебное озеро»", examNotes: "Сказочные картины." },
-            { id: "glazunov", name: "А.К. Глазунов", years: "1865–1936", shortBio: "Директор консерватории.", mainWorks: "«Раймонда»", examNotes: "Завершил «Князя Игоря»." },
-            { id: "scriabin", name: "А.Н. Скрябин", years: "1872–1915", shortBio: "Философ-мистик.", mainWorks: "«Поэма экстаза»", examNotes: "Светомузыка." },
-            { id: "stravinsky", name: "И.Ф. Стравинский", years: "1882–1971", shortBio: "Самый влиятельный композитор XX века.", mainWorks: "«Петрушка»", examNotes: "Битональность, полиритмия." }
-        ];
-        
-        // ПОЛНЫЕ БИЛЕТЫ
-        const ticketsData = {
-            doop: [
-                { ticketNumber: 1, questions: ["Расскажите о творчестве М.И. Глинки. Назовите его основные произведения.", "Охарактеризуйте оперу «Иван Сусанин»: сюжет, главные герои, основные сцены."], fullAnswer1: "Михаил Иванович Глинка (1804–1857) — основоположник русской классической музыки. Он создал первую русскую национальную оперу, заложил основы русского симфонизма и классического романса. Главные произведения: оперы «Иван Сусанин» и «Руслан и Людмила», симфоническая фантазия «Камаринская», романсы «Я помню чудное мгновенье», «Попутная песня», «Жаворонок».", fullAnswer2: "Опера «Иван Сусанин» — первая русская национальная опера (1836). Сюжет: Иван Сусанин заводит поляков в непроходимый лес и погибает, спасая царя. Главные герои: Иван Сусанин (бас), Антонида (сопрано), Ваня (контральто), Собинин (тенор). Основные сцены: интродукция, ария Сусанина, хор «Славься».", audioFragment: "" },
-                { ticketNumber: 2, questions: ["Биография и творчество А.С. Даргомыжского. В чем его новаторство?", "Расскажите об опере «Русалка»: сюжет, музыкальные характеристики героев."], fullAnswer1: "Александр Сергеевич Даргомыжский (1813–1869) — русский композитор. Новаторство: правдивое воспроизведение интонаций разговорной речи («Хочу, чтобы звук прямо выражал слово»), социальная тематика в песнях.", fullAnswer2: "Опера «Русалка» (1856) — первая русская лирико-психологическая опера. Сюжет: Князь бросает дочь мельника Наташу, она становится русалкой. Мельник (бас) — ария «Ох, тошно мне...» (безумный смех); Наташа (сопрано) — песня «Мне минуло шестнадцать лет».", audioFragment: "" },
-                { ticketNumber: 3, questions: ["Творчество А.П. Бородина. Основные жанры и произведения.", "Опера «Князь Игорь»: история создания, сюжет, главные герои. Половецкие пляски."], fullAnswer1: "Александр Порфирьевич Бородин (1833–1887) — композитор и учёный-химик, член «Могучей кучки». Основные жанры: опера, симфония, романс. Произведения: «Князь Игорь», «Богатырская» симфония.", fullAnswer2: "Опера «Князь Игорь» на сюжет «Слова о полку Игореве». После смерти Бородина оперу завершили Римский-Корсаков и Глазунов. Главные герои: Игорь (баритон), Ярославна (сопрано), Кончак (бас). Половецкие пляски — хор «Улетай на крыльях ветра», мужской танец.", audioFragment: "" },
-                { ticketNumber: 4, questions: ["Н.А. Римский-Корсаков — композитор-сказочник. Назовите его оперы на сказочные сюжеты.", "Опера «Снегурочка»: сюжет, музыкальные характеристики главных героев."], fullAnswer1: "Николай Андреевич Римский-Корсаков (1844–1908). Оперы на сказочные сюжеты: «Снегурочка», «Садко», «Сказка о царе Салтане», «Кащей Бессмертный», «Золотой петушок».", fullAnswer2: "Опера «Снегурочка» (1881) — весенняя сказка. Снегурочка (сопрано) — ария «С подружками по ягоды ходить»; Лель (контральто) — третья песня «Туча со громом сговаривалась»; царь Берендей (тенор) — каватина.", audioFragment: "" },
-                { ticketNumber: 5, questions: ["Творчество М.П. Мусоргского. Опера «Борис Годунов» как народная музыкальная драма.", "Фортепианный цикл «Картинки с выставки»: история создания, содержание."], fullAnswer1: "Модест Петрович Мусоргский (1839–1881). «Борис Годунов» — народная музыкальная драма, где народ — главное действующее лицо. Образ Бориса (бас) — монолог «Достиг я высшей власти».", fullAnswer2: "«Картинки с выставки» (1874) — фортепианный цикл памяти художника Гартмана. 10 пьес: «Гном», «Старый замок», «Быдло», «Балет невылупившихся птенцов», «Избушка на курьих ножках», «Богатырские ворота». Оркестровка Равеля.", audioFragment: "" },
-                { ticketNumber: 6, questions: ["Жизненный и творческий путь П.И. Чайковского. Основные жанры.", "Опера «Евгений Онегин» как «лирические сцены». Музыкальные характеристики главных героев."], fullAnswer1: "Пётр Ильич Чайковский (1840–1893). Основные жанры: оперы, балеты, симфонии, фортепианные циклы. Особенности: глубокая эмоциональность, мелодизм.", fullAnswer2: "Опера «Евгений Онегин» (1878) — «лирические сцены». Татьяна (сопрано) — сцена письма; Ленский (тенор) — ария «Куда, куда вы удалились»; Онегин (баритон) — ариозо «Увы, сомненья нет».", audioFragment: "" },
-                { ticketNumber: 7, questions: ["Симфоническое творчество П.И. Чайковского. Симфония №1 «Зимние грезы».", "Русский романс первой половины XIX века. Творчество Алябьева, Варламова, Гурилева."], fullAnswer1: "Первая симфония «Зимние грезы» (1866). I часть — «Грезы зимней дорогой», II — «Угрюмый край», III — Скерцо, IV — Финал. Главная тема создаёт образ зимнего пейзажа.", fullAnswer2: "А.А. Алябьев: «Соловей» (написан в тюрьме). А.Е. Варламов: «Красный сарафан», «Белеет парус одинокий». А.Л. Гурилёв: «Колокольчик». Общие черты: близость к народной песне.", audioFragment: "" },
-                { ticketNumber: 8, questions: ["Жизнь и творчество С.В. Рахманинова. Основные сочинения.", "Второй концерт для фортепиано с оркестром: образы, строение, главные темы."], fullAnswer1: "Сергей Васильевич Рахманинов (1873–1943). Основные сочинения: концерты №2 и №3, «Вокализ», прелюдия до-диез минор. С 1917 года в эмиграции.", fullAnswer2: "Второй концерт (1901). I часть — начинается с восьми аккордов («колокольность»). Главная партия — суровая, побочная — широкая мелодия. II часть — лирическая. III часть — праздничная.", audioFragment: "" },
-                { ticketNumber: 9, questions: ["Творчество С.С. Прокофьева. Балет «Ромео и Джульетта».", "Кантата «Александр Невский»: история создания, содержание, основные фрагменты."], fullAnswer1: "Балет «Ромео и Джульетта» (1935). «Танец рыцарей» — символ вражды. Система лейтмотивов у каждого героя.", fullAnswer2: "Кантата (1939) на основе музыки к фильму Эйзенштейна. 7 частей: «Вставайте, люди русские», «Ледовое побоище», «Мёртвое поле».", audioFragment: "" },
-                { ticketNumber: 10, questions: ["Д.Д. Шостакович. Симфония №7 «Ленинградская»: история создания, образное содержание.", "Отечественная музыка второй половины XX века. Творчество Г.В. Свиридова и Р.К. Щедрина."], fullAnswer1: "Симфония №7 (1941) написана в блокадном Ленинграде. Эпизод нашествия — 11 вариаций. Премьера 9 августа 1942 года.", fullAnswer2: "Г.В. Свиридов: «Метель» (Романс, Вальс). Р.К. Щедрин: балет «Кармен-сюита», концерт «Озорные частушки».", audioFragment: "" }
-            ],
-            fgt: [
-                { ticketNumber: 1, questions: ["Русская музыкальная культура XVIII века. Творчество Бортнянского, Березовского, Фомина.", "Оперное творчество М.И. Глинки. Сравнительный анализ опер «Иван Сусанин» и «Руслан и Людмила»."], fullAnswer1: "Бортнянский (1751–1825) — хоровые концерты. Березовский (1745–1777) — «Не отвержи мене». Фомин (1761–1800) — опера «Мельник».", fullAnswer2: "«Иван Сусанин» (1836) — героико-трагическая опера на исторический сюжет. Финал — хор «Славься». «Руслан и Людмила» (1842) — волшебно-эпическая опера на сказочный сюжет. Различия: трагедия vs сказка.", audioFragment: "" },
-                { ticketNumber: 2, questions: ["М.И. Глинка — основоположник русской классической музыки. Значение его творчества.", "Симфонические произведения Глинки: «Камаринская», «Арагонская хота», «Вальс-фантазия»."], fullAnswer1: "Глинка создал первую русскую оперу, заложил основы симфонизма («Камаринская»). Чайковский: «Вся русская симфоническая школа в "Камаринской"».", fullAnswer2: "«Камаринская» (1848) — фантазия на две русские темы. «Арагонская хота» (1845) — испанская увертюра. «Вальс-фантазия» (1839) — первый симфонический вальс.", audioFragment: "" },
-                { ticketNumber: 3, questions: ["Романсы М.И. Глинки. Жанровое разнообразие. Анализ романса «Я помню чудное мгновеньe».", "Творчество А.С. Даргомыжского. Опера «Русалка» как лирико-психологическая драма."], fullAnswer1: "Глинка написал более 70 романсов. «Я помню чудное мгновенье» на стихи Пушкина. Трёхчастная форма: I — плавная, II — драматическая, III — светлая реприза.", fullAnswer2: "«Русалка» — первая лирико-психологическая опера. Речитатив приближен к разговорной речи, сквозное развитие, трагический финал.", audioFragment: "" },
-                { ticketNumber: 4, questions: ["«Могучая кучка» — содружество русских композиторов. Состав, идеи, значение.", "Деятельность М.А. Балакирева. Его роль в развитии русской музыки."], fullAnswer1: "«Могучая кучка»: Балакирев, Мусоргский, Бородин, Римский-Корсаков, Кюи. Идеи: национальная самобытность, реализм.", fullAnswer2: "Балакирев — глава кружка. Собирал народные песни, руководил Бесплатной музыкальной школой. Фантазия «Исламей».", audioFragment: "" },
-                { ticketNumber: 5, questions: ["Жизненный и творческий путь А.П. Бородина. Основные жанры.", "Опера «Князь Игорь»: драматургия, система лейтмотивов, характеристика главных героев."], fullAnswer1: "Бородин — композитор и учёный-химик. Опера, симфония, романс. Симфония №2 «Богатырская».", fullAnswer2: "Контраст русского и половецкого миров. Игорь (баритон) — ария «Ни сна, ни отдыха»; Ярославна (сопрано) — плач; Кончак (бас).", audioFragment: "" },
-                { ticketNumber: 6, questions: ["Симфоническое творчество А.П. Бородина. «Богатырская» симфония (№2).", "Романсы Бородина: «Спящая княжна», «Для берегов Отчизны дальней»."], fullAnswer1: "«Богатырская» симфония (1869–1876). 4 части. Главная партия I части — «богатырская поступь».", fullAnswer2: "«Спящая княжна» — мрачная баллада. «Для берегов Отчизны дальней» на стихи Пушкина — траурный романс.", audioFragment: "" },
-                { ticketNumber: 7, questions: ["Жизнь и творчество М.П. Мусоргского. Новаторство композитора.", "Опера «Борис Годунов» как народная музыкальная драма. Образ народа и образ царя."], fullAnswer1: "Мусоргский — новатор: опера на речитативе, хор — главное действующее лицо, правда жизни.", fullAnswer2: "Образ народа: от покорного до бунтующего. Образ Бориса — монолог «Достиг я высшей власти», сцена с Юродивым.", audioFragment: "" },
-                { ticketNumber: 8, questions: ["Вокальное творчество М.П. Мусоргского. Песни и вокальные циклы.", "Фортепианный цикл «Картинки с выставки»: история, содержание, оркестровка Равеля."], fullAnswer1: "Цикл «Детская», «Песни и пляски смерти». Психологические вокальные портреты.", fullAnswer2: "10 пьес памяти Гартмана. Оркестровка Равеля: «Прогулка» — труба, «Гном» — фаготы, «Богатырские ворота» — весь оркестр.", audioFragment: "" },
-                { ticketNumber: 9, questions: ["Жизненный и творческий путь Н.А. Римского-Корсакова. Многогранность деятельности.", "Опера «Снегурочка»: жанр лирической сказки, музыкальные характеристики героев."], fullAnswer1: "Римский-Корсаков — композитор, педагог (воспитал Стравинского, Прокофьева), теоретик.", fullAnswer2: "«Снегурочка» (1881) — весенняя сказка. Ария Снегурочки, третья песня Леля, каватина Берендея.", audioFragment: "" },
-                { ticketNumber: 10, questions: ["Симфоническое творчество Н.А. Римского-Корсакова. Сюита «Шехеразада».", "Римский-Корсаков — педагог. Его роль в воспитании композиторов."], fullAnswer1: "«Шехеразада» (1888) — 4 части. Тема Шехеразады (скрипка-соло) — лейттема рассказчицы.", fullAnswer2: "Воспитал более 200 композиторов: Стравинский, Прокофьев, Глазунов, Лядов. Создал «петербургскую школу».", audioFragment: "" },
-                { ticketNumber: 11, questions: ["Жизненный и творческий путь П.И. Чайковского. Мировое признание.", "Симфоническое творчество Чайковского. Симфония №1 «Зимние грезы»."], fullAnswer1: "Чайковский — первый русский композитор с мировым признанием. Турне по Европе (1888) и США (1891).", fullAnswer2: "Первая симфония (1866) — «Зимние грезы». I часть — «Грезы зимней дорогой» (сонатная форма).", audioFragment: "" },
-                { ticketNumber: 12, questions: ["Опера «Евгений Онегин»: жанр «лирических сцен», драматургия, характеристики героев.", "Образ Татьяны в опере «Евгений Онегин». Сцена письма."], fullAnswer1: "«Лирические сцены» — камерная опера. Герои: Татьяна, Онегин, Ленский, Гремин.", fullAnswer2: "Сцена письма — кульминация I картины. Речитатив, ария, кульминация («Кто ты, мой ангел ли хранитель»).", audioFragment: "" },
-                { ticketNumber: 13, questions: ["Русская музыка на рубеже XIX–XX веков. Танеев, Лядов, Глазунов.", "Творчество С.В. Рахманинова. Концерт №2 для фортепиано с оркестром."], fullAnswer1: "Танеев — кантата «Иоанн Дамаскин». Лядов — «Волшебное озеро». Глазунов — балет «Раймонда».", fullAnswer2: "Второй концерт — символ преодоления кризиса. I часть: аккорды фортепиано, суровая главная партия.", audioFragment: "" },
-                { ticketNumber: 14, questions: ["«Русские сезоны» С.П. Дягилева. Творчество И.Ф. Стравинского.", "Балет «Петрушка»: сюжет, музыка, новаторство."], fullAnswer1: "«Русские сезоны» (1907–1914) в Париже. Балеты Стравинского: «Жар-птица», «Петрушка», «Весна священная».", fullAnswer2: "«Петрушка» (1911). Новаторство: битональность, остинато. Трагический образ «маленького человека».", audioFragment: "" },
-                { ticketNumber: 15, questions: ["Отечественная музыкальная культура XX века. Творчество С.С. Прокофьева.", "Балет «Ромео и Джульетта»: система лейтмотивов, образы героев."], fullAnswer1: "Прокофьев: ранний, зарубежный, советский периоды. «Александр Невский», «Ромео и Джульетта».", fullAnswer2: "Лейтмотивы Ромео, Джульетты, Тибальта. «Танец рыцарей» — символ вражды.", audioFragment: "" }
-            ]
-        };
-        
-        // Состояние
-        let currentScreen = 'program';
-        let currentProgram = null;
-        let currentComposer = null;
-        let currentTicket = null;
-        
-        function render() {
-            const app = document.getElementById('app');
-            if (currentScreen === 'program') renderProgramScreen(app);
-            else if (currentScreen === 'main') renderMainMenu(app);
-            else if (currentScreen === 'composers') renderComposersList(app);
-            else if (currentScreen === 'composerDetail') renderComposerDetail(app);
-            else if (currentScreen === 'tickets') renderTicketsList(app);
-            else if (currentScreen === 'ticketDetail') renderTicketDetail(app);
-        }
-        
-        function renderProgramScreen(container) {
-            container.innerHTML = `
-                <div class="header"><h1>🎵 Музлит-репетитор</h1><p class="subtitle">Подготовка к экзамену по русской музыкальной литературе</p></div>
-                <div class="card" onclick="selectProgram('FGT')"><div class="icon">🎓</div><h3>ФГТ / ДПОП</h3><p>Предпрофессиональная программа</p></div>
-                <div class="card" onclick="selectProgram('DOOP')"><div class="icon">🎨</div><h3>ДООП / ОРП</h3><p>Общеразвивающая программа</p></div>
-                <div class="footer"><p>ДШИ «Лицей искусств» им. В.Н. Сафонова, Тольятти</p></div>
-            `;
-        }
-        
-        function renderMainMenu(container) {
-            const programName = currentProgram === 'FGT' ? 'Предпрофессиональная' : 'Общеразвивающая';
-            container.innerHTML = `
-                <div class="header"><h1>🎵 Музлит-репетитор</h1><p class="subtitle">${programName} программа</p></div>
-                <div class="menu-grid">
-                    <div class="menu-card" onclick="goToComposers()"><div class="icon">📚</div><h3>Композиторы</h3><p>29 композиторов</p></div>
-                    <div class="menu-card" onclick="goToTickets()"><div class="icon">📝</div><h3>Экзаменационные билеты</h3><p>${currentProgram === 'DOOP' ? '10' : '15'} билетов</p></div>
-                </div>
-                <button class="btn-back" onclick="backToProgram()">← Изменить программу</button>
-                <div class="footer"><p>ДШИ «Лицей искусств» им. В.Н. Сафонова, Тольятти</p></div>
-            `;
-        }
-        
-        function renderComposersList(container) {
-            let html = `<div class="header"><button class="btn-back" onclick="goToMain()">← Назад</button><h1>Композиторы</h1></div>`;
-            composersData.forEach(c => {
-                html += `<div class="composer-card" onclick="showComposerDetail('${c.id}')"><h3>${c.name}</h3><p class="subtitle">${c.years}</p><p>${c.shortBio.substring(0, 100)}...</p></div>`;
-            });
-            container.innerHTML = html;
-        }
-        
-        function renderComposerDetail(container) {
-            const c = currentComposer;
-            container.innerHTML = `
-                <div class="header"><button class="btn-back" onclick="goToComposers()">← Назад</button><h1>${c.name}</h1><p class="subtitle">${c.years}</p></div>
-                <div style="background: var(--tg-theme-secondary-bg-color, #f5f5f5); border-radius: 16px; padding: 20px;">
-                    <div style="margin-bottom: 20px;"><h3>📖 Биография</h3><p>${c.shortBio}</p></div>
-                    <div style="margin-bottom: 20px;"><h3>🎵 Главные произведения</h3><p>${c.mainWorks}</p></div>
-                    <div><h3>🎓 Что нужно знать на экзамене</h3><p>${c.examNotes}</p></div>
-                </div>
-            `;
-        }
-        
-        function renderTicketsList(container) {
-            const tickets = currentProgram === 'DOOP' ? ticketsData.doop : ticketsData.fgt;
-            let html = `<div class="header"><button class="btn-back" onclick="goToMain()">← Назад</button><h1>Экзаменационные билеты</h1></div>`;
-            tickets.forEach(t => {
-                html += `<div class="ticket-card" onclick="showTicketDetail(${t.ticketNumber})"><h3>Билет №${t.ticketNumber}</h3><p class="subtitle">${t.questions[0].substring(0, 80)}...</p></div>`;
-            });
-            container.innerHTML = html;
-        }
-        
-        function renderTicketDetail(container) {
-            const t = currentTicket;
-            container.innerHTML = `
-                <div class="header"><button class="btn-back" onclick="goToTickets()">← Назад</button><h1>Билет №${t.ticketNumber}</h1></div>
-                <div style="margin-bottom: 16px;"><div style="background: var(--tg-theme-secondary-bg-color, #f5f5f5); border-radius: 12px; padding: 16px;"><h3>Вопрос 1</h3><p>${t.questions[0]}</p><button class="btn-answer" onclick="toggleAnswer(0)">Показать ответ</button><div id="answer-0" class="answer-block hidden">${t.fullAnswer1}</div></div></div>
-                <div><div style="background: var(--tg-theme-secondary-bg-color, #f5f5f5); border-radius: 12px; padding: 16px;"><h3>Вопрос 2</h3><p>${t.questions[1]}</p><button class="btn-answer" onclick="toggleAnswer(1)">Показать ответ</button><div id="answer-1" class="answer-block hidden">${t.fullAnswer2}</div></div></div>
-            `;
-        }
-        
-        // Навигация
-        window.selectProgram = (p) => { currentProgram = p; currentScreen = 'main'; render(); };
-        window.backToProgram = () => { currentScreen = 'program'; currentProgram = null; render(); };
-        window.goToMain = () => { currentScreen = 'main'; render(); };
-        window.goToComposers = () => { currentScreen = 'composers'; render(); };
-        window.goToTickets = () => { currentScreen = 'tickets'; render(); };
-        window.showComposerDetail = (id) => { currentComposer = composersData.find(c => c.id === id); currentScreen = 'composerDetail'; render(); };
-        window.showTicketDetail = (num) => { const tickets = currentProgram === 'DOOP' ? ticketsData.doop : ticketsData.fgt; currentTicket = tickets.find(t => t.ticketNumber === num); currentScreen = 'ticketDetail'; render(); };
-        window.toggleAnswer = (idx) => { const div = document.getElementById(`answer-${idx}`); const btn = div.previousElementSibling; if (div.classList.contains('hidden')) { div.classList.remove('hidden'); btn.textContent = 'Скрыть ответ'; } else { div.classList.add('hidden'); btn.textContent = 'Показать ответ'; } };
-        
-        render();
     </script>
 </body>
 </html>

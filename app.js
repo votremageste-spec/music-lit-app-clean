@@ -268,4 +268,30 @@ window.toggleAnswer = (index) => {
 };
 
 // Запуск приложения
-loadData();
+async function loadData() {
+    try {
+        console.log('Начинаем загрузку...');
+        
+        const composersRes = await fetch('/composers.json');
+        console.log('composers.json статус:', composersRes.status);
+        const composersData = await composersRes.json();
+        composers = composersData.composers;
+        console.log('Композиторы загружены:', composers.length);
+        
+        const ticketsRes = await fetch('/tickets.json');
+        console.log('tickets.json статус:', ticketsRes.status);
+        tickets = await ticketsRes.json();
+        console.log('Билеты загружены');
+        
+        const testsRes = await fetch('/tests.json');
+        console.log('tests.json статус:', testsRes.status);
+        const testsData = await testsRes.json();
+        tests = testsData.tests;
+        console.log('Тесты загружены');
+        
+        render();
+    } catch (error) {
+        console.error('Детальная ошибка:', error);
+        document.getElementById('app').innerHTML = '<div class="loading">Ошибка загрузки данных: ' + error.message + '</div>';
+    }
+}
